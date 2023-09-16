@@ -1,4 +1,5 @@
 
+
 # Get Integrated Matrix  ---------------------------------------------------------------
 
 library(Seurat)
@@ -42,25 +43,42 @@ remove_doublets <- function(obj, filename) {
 }
 
 run_qc <- function(obj, mtn_genes, plotname, filename) {
-
   mtn_genes <- mtn_genes[mtn_genes %in% rownames(GetAssayData(obj))]
 
-  obj[["percent.mt"]] <- PercentageFeatureSet(obj, features = mtn_genes)
+  obj[["percent.mt"]] <-
+    PercentageFeatureSet(obj, features = mtn_genes)
 
   obj[["percent.mt"]][is.na(obj[["percent.mt"]])] <- 0
 
-  med.qc <- FetchData(obj, vars=c("nFeature_originalexp","nCount_originalexp","percent.mt"))
+  med.qc <-
+    FetchData(obj,
+              vars = c("nFeature_originalexp", "nCount_originalexp", "percent.mt"))
 
   p <- med.qc %>%
-    mutate(keep = if_else(nCount_originalexp > 500 & nFeature_originalexp < 7000 & percent.mt < 10, "keep", "remove")) %>%
+    mutate(
+      keep = if_else(
+        nCount_originalexp > 500 &
+          nFeature_originalexp < 7000 &
+          percent.mt < 10,
+        "keep",
+        "remove"
+      )
+    ) %>%
     ggplot() +
-    geom_point(aes(nCount_originalexp, nFeature_originalexp, colour=keep), alpha=.50) +
+    geom_point(aes(nCount_originalexp, nFeature_originalexp, colour = keep),
+               alpha = .50) +
     scale_x_log10() +
     scale_y_log10()
 
-  ggsave(p, filename = plotname, width = 15, height = 12)
+  ggsave(p,
+         filename = plotname,
+         width = 15,
+         height = 12)
 
-  obj <- subset(obj, nCount_originalexp > 500 & nFeature_originalexp < 8000 & percent.mt < 10)
+  obj <-
+    subset(obj,
+           nCount_originalexp > 500 &
+             nFeature_originalexp < 8000 & percent.mt < 10)
 
   saveRDS(obj, file = "data/mmusculus/filtered_seurat_obj.rds")
 
@@ -74,19 +92,25 @@ integrate_data <- function(obj, plotname, filename) {
   obj.list <- SplitObject(obj, split.by = "sample")
 
   # Normalize and identify variable features for each sample
-  obj.list <- lapply(X = obj.list, FUN = function(x) {
-    x <- NormalizeData(x)
-    x <- FindVariableFeatures(x, selection.method = "vst", nfeatures = 2000)
-  })
+  obj.list <- lapply(
+    X = obj.list,
+    FUN = function(x) {
+      x <- NormalizeData(x)
+      x <-
+        FindVariableFeatures(x, selection.method = "vst", nfeatures = 2000)
+    }
+  )
 
   # Select features that are variable across different samples
   features <- SelectIntegrationFeatures(object.list = obj.list)
 
   # Find the anchors across the different samples
-  obj.anchors <- FindIntegrationAnchors(object.list = obj.list, anchor.features = features)
+  obj.anchors <-
+    FindIntegrationAnchors(object.list = obj.list, anchor.features = features)
 
   # Create an integrated data assay
-  obj.combined <- IntegrateData(anchorset = obj.anchors, k.weight = 50)
+  obj.combined <-
+    IntegrateData(anchorset = obj.anchors, k.weight = 50)
 
   DefaultAssay(obj.combined) <- "integrated"
 
@@ -98,11 +122,21 @@ integrate_data <- function(obj, plotname, filename) {
     FindClusters(resolution = 0.5)
 
   # Visualization
-  p1 <- DimPlot(obj.combined, reduction = "umap", group.by = "sample")
-  p2 <- DimPlot(obj.combined, reduction = "umap", label = TRUE, repel = TRUE)
+  p1 <-
+    DimPlot(obj.combined, reduction = "umap", group.by = "sample")
+  p2 <-
+    DimPlot(
+      obj.combined,
+      reduction = "umap",
+      label = TRUE,
+      repel = TRUE
+    )
   p_all <- p1 + p2
 
-  ggsave(p_all, filename = plotname, height = 12, width = 18)
+  ggsave(p_all,
+         filename = plotname,
+         height = 12,
+         width = 18)
 
   saveRDS(obj.combined, filename)
 
@@ -115,13 +149,26 @@ integrate_data <- function(obj, plotname, filename) {
 mm_mt_gns <- vroom("data/mmusculus/mitchondrial_genes.txt") %>%
   pull(5)
 
-mm <- zellkonverter::readH5AD("data/mmusculus/combined_matrix.h5ad", X_name = "counts")
+mm <-
+  zellkonverter::readH5AD("data/mmusculus/combined_matrix.h5ad", X_name = "counts")
 
-mm_seurat <- remove_doublets(mm, "results/mmusculus/cleaned_seurat.rds")
+mm_seurat <-
+  remove_doublets(mm, "results/mmusculus/cleaned_seurat.rds")
 
-mm_filtered <- run_qc(mm_seurat, mm_mt_gns, "results/mmusculus/keep_plot.pdf", "results/mmusculus/filtered_seurat.rds")
+mm_filtered <-
+  run_qc(
+    mm_seurat,
+    mm_mt_gns,
+    "results/mmusculus/keep_plot.pdf",
+    "results/mmusculus/filtered_seurat.rds"
+  )
 
-mm_integrated <- integrate_data(mm_filtered, "results/mmusculus/integration_plot.pdf", "results/mmusculus/integrated.rds")
+mm_integrated <-
+  integrate_data(
+    mm_filtered,
+    "results/mmusculus/integration_plot.pdf",
+    "results/mmusculus/integrated.rds"
+  )
 
 # Run Lonchura striata ----------------
 
@@ -142,36 +189,66 @@ ls_mito_genes <-
     "ND6"
   )
 
-lstr <- zellkonverter::readH5AD("data/lstriata/combined_matrix.h5ad", X_name = "counts")
+lstr <-
+  zellkonverter::readH5AD("data/lstriata/combined_matrix.h5ad", X_name = "counts")
 
-ls_seurat <- remove_doublets(lstr, "results/lstriata/cleaned_seurat.rds")
+ls_seurat <-
+  remove_doublets(lstr, "results/lstriata/cleaned_seurat.rds")
 
-ls_filtered <- run_qc(ls_seurat, ls_mito_genes, "results/lstriata/keep_plot.pdf", "results/lstriata/filtered_seurat.rds")
+ls_filtered <-
+  run_qc(
+    ls_seurat,
+    ls_mito_genes,
+    "results/lstriata/keep_plot.pdf",
+    "results/lstriata/filtered_seurat.rds"
+  )
 
-ls_integrated <- integrate_data(ls_filtered, "results/lstriata/integration_plot.pdf", "results/lstriata/integrated.rds")
+ls_integrated <-
+  integrate_data(
+    ls_filtered,
+    "results/lstriata/integration_plot.pdf",
+    "results/lstriata/integrated.rds"
+  )
 
 # Run Pogona vitticeps ----------------
 
-pv_mito_genes <-
-  c(
-    "CO1",
-    "CO2",
-    "CO3",
-    "CR1",
-    "CR2",
-    "AT8",
-    "AT6",
-    "ND1",
-    "ND3",
-    "ND4",
-    "ND4L",
-    "ND5"
+pv_mito_genes <- c("CO1",
+                   "CO2",
+                   "CO3",
+                   "CR1",
+                   "CR2",
+                   "AT8",
+                   "AT6",
+                   "ND1",
+                   "ND3",
+                   "ND4",
+                   "ND4L",
+                   "ND5")
+
+pv <-
+  zellkonverter::readH5AD("data/pvitticeps/combined_matrix.h5ad", X_name = "counts")
+
+pv_seurat <-
+  remove_doublets(pv, "results/pvitticeps/cleaned_seurat.rds")
+
+pv_filtered <-
+  run_qc(
+    pv_seurat,
+    pv_mito_genes,
+    "results/pvitticeps/keep_plot.pdf",
+    "results/pvitticeps/filtered_seurat.rds",
   )
 
-pv <- zellkonverter::readH5AD("data/pvitticeps/combined_matrix.h5ad", X_name = "counts")
+pv_samples_to_remove <-
+  c(
+    "SRX3215998", "SRX3215995"
+  )
 
-pv_seurat <- remove_doublets(pv, "results/pvitticeps/cleaned_seurat.rds")
+pv_filtered <- subset(pv_filtered, sample %in% pv_samples_to_remove, invert = TRUE)
 
-pv_filtered <- run_qc(pv_seurat, pv_mito_genes, "results/pvitticeps/keep_plot.pdf", "results/pvitticeps/filtered_seurat.rds")
-
-pv_integrated <- integrate_data(pv_filtered, "results/pvitticeps/integration_plot.pdf", "results/pvitticeps/integrated.rds")
+pv_integrated <-
+  integrate_data(
+    pv_filtered,
+    "results/pvitticeps/integration_plot.pdf",
+    "results/pvitticeps/integrated.rds"
+  )
