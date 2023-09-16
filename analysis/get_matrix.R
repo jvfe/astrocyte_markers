@@ -113,7 +113,6 @@ integrate_data <- function(obj, plotname, filename) {
 # Run Mus musculus ---------------------
 
 mm_mt_gns <- vroom("data/mmusculus/mitchondrial_genes.txt") %>%
-  filter(`Gene name` %in% rownames(GetAssayData(mm_seurat))) %>%
   pull(5)
 
 mm <- zellkonverter::readH5AD("data/mmusculus/combined_matrix.h5ad", X_name = "counts")
