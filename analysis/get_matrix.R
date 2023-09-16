@@ -236,7 +236,7 @@ pv_filtered <-
     pv_seurat,
     pv_mito_genes,
     "results/pvitticeps/keep_plot.pdf",
-    "results/pvitticeps/filtered_seurat.rds",
+    "results/pvitticeps/filtered_seurat.rds"
   )
 
 pv_samples_to_remove <-
