@@ -1,43 +1,62 @@
 library(Seurat)
-library(SingleCellExperiment)
-library(scDblFinder)
-library(preprocessCore)
-library(clustree)
 library(SingleR)
-library(vroom)
-library(tibble)
 library(tidyverse)
 library(patchwork)
 library(celldex)
-library(org.Mm.eg.db)
 
-sc <- readRDS("data/mmusculus/integrated_data.rds")
+annotate_cell_type <- function(object, ref, results_path) {
+  sce <- as.SingleCellExperiment(object)
 
-sce <- as.SingleCellExperiment(sc)
+  pred <- SingleR(sce, ref = ref, labels = ref$label.main)
 
-rownames(sce) <-
-  stringr::str_remove(rownames(sce), pattern = "\\.\\d+")
+  score_heats <- plotScoreHeatmap(pred)
 
-ref <- MouseRNAseqData()
+  ggsave(
+    score_heats,
+    filename = paste0(results_path, "score_heatmap.pdf"),
+    height = 8,
+    width = 12
+  )
 
-pred <- SingleR(sce, ref = ref, labels = ref$label.main)
+  my.table <- table(Assigned = pred$pruned.labels,
+                    cluster = sce$seurat_clusters)
 
-table(pred$labels)
-plotScoreHeatmap(pred)
+  pheat <-
+    pheatmap::pheatmap(log2(my.table + 10), color = colorRampPalette(c("white", "blue"))(101))
 
-my.table <- table(Assigned = pred$pruned.labels,
-                  cluster = sce$seurat_clusters)
+  ggsave(
+    pheat,
+    filename = paste0(results_path, "cell_pheatmap.pdf"),
+    height = 8
+  )
 
-pheatmap::pheatmap(log2(my.table + 10), color = colorRampPalette(c("white", "blue"))(101))
+  aggregated <- scater::sumCountsAcrossCells(sce,
+                                             pred$pruned.labels,
+                                             exprs_values = "logcounts",
+                                             average = TRUE)
 
-aggregated <- scater::sumCountsAcrossCells(sce,
-                                           pred$pruned.labels,
-                                           exprs_values = "logcounts",
-                                           average = TRUE)
+  by_cell_matrix <- assay(aggregated) %>%
+    as.data.frame() %>%
+    rownames_to_column()
 
-matrix <- assay(aggregated) %>%
-  as.data.frame() %>%
-  rownames_to_column()
+  by_cell_matrix %>%
+    write_csv(paste0(results_path, "per_cell_expression.csv"))
 
-matrix %>%
-  write_csv("results/mmusculus/per_cell_expression.csv")
+  return(by_cell_matrix)
+}
+
+# Refs
+mm_ref <- MouseRNAseqData()
+ref <- BlueprintEncodeData()
+
+# Mus musculus
+mm <- readRDS("results/mmusculus/integrated.rds")
+mm_cells <- annotate_cell_type(mm, mm_ref, "results/mmusculus/")
+
+# Lonchura striata domestica
+lstr <- readRDS("results/lstriata/integrated.rds")
+lstr_cells <- annotate_cell_type(lstr, ref, "results/lstriata/")
+
+# Pogona vitticeps
+pv <- readRDS("results/pvitticeps/integrated.rds")
+pv_cells <- annotate_cell_type(pv, ref, "results/pvitticeps/")
