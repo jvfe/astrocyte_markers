@@ -1,0 +1,10 @@
+project:
+  title: "astrocyte_markers"
+  output-dir: reports
+
+date: today
+date-format: long
+
+format:
+  html:
+    toc: true

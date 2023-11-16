@@ -1,0 +1,124 @@
+---
+title: "Astrocyte markers - Initial results"
+author: "João Cavalcante e Dante von Zuben"
+date: "`r Sys.setlocale('LC_TIME', 'C'); format(Sys.time(), '%d %B, %Y')`"
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "reports/") })
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: false
+    theme:
+      bslib: true
+      bootswatch: minty
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,  message = FALSE)
+
+library(here)
+library(DT)
+
+make_datatable <- function(data, colnames) {
+  data %>%
+    datatable(
+      .,
+      extensions = "Buttons",
+      rownames = FALSE,
+      escape = FALSE,
+      colnames = colnames,
+      filter = 'top',
+      options = list(
+        scrollX = TRUE,
+        dom = '<"d-flex justify-content-between"lBf>rtip',
+        buttons = list(
+          'copy',
+          list(
+            extend = 'collection',
+            buttons = c('csv', 'excel'),
+            text = 'Download'
+          )
+        )
+      )
+    )
+}
+```
+
+## GenePlast results
+
+COG identifiers for each gene were acquired from the STRINGdb v11.5 COG mappings file.
+The rooting analysis was then performed for these COG IDs.
+
+:::{.column-body-outset}
+```{r geneplast-table}
+geneplast_roots <-
+  vroom::vroom(here("results/enraizamento_genes_astrocitos.csv"))
+
+knitr::kable(geneplast_roots,
+               col.names = c("COG", "Root", "Clade", "Symbol", "ENSP"))
+```
+:::
+
+## Orthologs
+
+1-to-1 orthologs gathered through the Ensembl database. 
+When an ortholog is not present, it couldn't be found.
+
+:::{.column-body-outset}
+```{r ortho-table}
+orthologs <-
+  vroom::vroom(here("data/orthologs.csv"))
+
+knitr::kable(orthologs,
+               col.names = c("H. sapiens", "M. musculus", "P. vitticeps", "L. striata domestica"))
+```
+:::
+
+## scRNA-seq Analysis
+
+### Selected datasets
+
+- [PRJNA408230](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA408230) (DropSeq) - 2020
+  - Pallium expression in Pogona vitticeps (lizard species)
+  - 35 samples
+  
+- [GSE150486](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE150486) (10x) - 2020
+  - Gene expression in two song-production related regions in Lonchura striata domestica (Bengali Finch)
+  - 4 samples
+
+- [GSE230116](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE230116) (10x) - 2023 
+  - Astrocyte expression in mice (only WT samples will be used)
+  - 4 samples
+
+### Methodology
+
+- Data was be acquired from [SRA](https://www.ncbi.nlm.nih.gov/sra/) through the [nf-core/fetchngs](https://github.com/nf-core/fetchngs) pipeline.
+
+- Count matrices were assembled through the [nf-core/scrnaseq](https://github.com/nf-core/scrnaseq) pipeline, using kallisto for alignment.
+
+- Matrices were then processed in the R programming language, using the [Seurat](https://satijalab.org/seurat/) package.
+  - The integrated dataset was then annotated using TransferData to a Mus musculus reference expression dataset.
+
+- All computational infrastructure was provided by [NPAD/UFRN](http://npad.ufrn.br/).
+
+### Results
+
+- The only dataset in which Astrocytes were detected among the cell clusters was the Mus musculus dataset.
+- Annotation results for L. striata and P. vitticeps showed a significant number of Neurons annotated, and
+multiple populations of neurons.
+  - This is consistent with the processed results from the P. vitticeps study, which showed no Astrocyte population, only
+  different neuron subtypes.
+  
+#### M. musculus
+
+![](../results/mmusculus/score_heatmap.png)
+
+
+#### P. vitticeps
+
+![](../results/pvitticeps/score_heatmap.png)
+
+#### L. striata
+
+![](../results/lstriata/score_heatmap.png)

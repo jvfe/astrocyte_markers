@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="João Cavalcante e Dante von Zuben">
+<meta name="dcterms.date" content="2023-11-16">
+
+<title>Astrocyte markers - Initial results</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="preliminary_files/libs/clipboard/clipboard.min.js"></script>
+<script src="preliminary_files/libs/quarto-html/quarto.js"></script>
+<script src="preliminary_files/libs/quarto-html/popper.min.js"></script>
+<script src="preliminary_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="preliminary_files/libs/quarto-html/anchor.min.js"></script>
+<link href="preliminary_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="preliminary_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="preliminary_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="preliminary_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="preliminary_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#geneplast-results" id="toc-geneplast-results" class="nav-link active" data-scroll-target="#geneplast-results">GenePlast results</a></li>
+  <li><a href="#orthologs" id="toc-orthologs" class="nav-link" data-scroll-target="#orthologs">Orthologs</a></li>
+  <li><a href="#scrna-seq-analysis" id="toc-scrna-seq-analysis" class="nav-link" data-scroll-target="#scrna-seq-analysis">scRNA-seq Analysis</a>
+  <ul class="collapse">
+  <li><a href="#selected-datasets" id="toc-selected-datasets" class="nav-link" data-scroll-target="#selected-datasets">Selected datasets</a></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Astrocyte markers - Initial results</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>João Cavalcante e Dante von Zuben </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 16, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="geneplast-results" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="geneplast-results">GenePlast results</h2>
+<p>COG identifiers for each gene were acquired from the STRINGdb v11.5 COG mappings file. The rooting analysis was then performed for these COG IDs.</p>
+<div class="column-body-outset">
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">COG</th>
+<th style="text-align: right;">Root</th>
+<th style="text-align: left;">Clade</th>
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">ENSP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">NOG26751</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">Actinopterygii</td>
+<td style="text-align: left;">S100B</td>
+<td style="text-align: left;">ENSP00000291700</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NOG07029</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: left;">Cephalochordata</td>
+<td style="text-align: left;">GFAP</td>
+<td style="text-align: left;">ENSP00000468500</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">KOG0200</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: left;">Choanoflagellata</td>
+<td style="text-align: left;">FGFR3</td>
+<td style="text-align: left;">ENSP00000339824</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">COG0580</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: left;">SAR</td>
+<td style="text-align: left;">AQP4</td>
+<td style="text-align: left;">ENSP00000372654</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">COG1012</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: left;">Metamonada</td>
+<td style="text-align: left;">ALDH1L1</td>
+<td style="text-align: left;">ENSP00000273450</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="orthologs" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="orthologs">Orthologs</h2>
+<p>1-to-1 orthologs gathered through the Ensembl database. When an ortholog is not present, it couldn’t be found.</p>
+<div class="column-body-outset">
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">H. sapiens</th>
+<th style="text-align: left;">M. musculus</th>
+<th style="text-align: left;">P. vitticeps</th>
+<th style="text-align: left;">L. striata domestica</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">AQP4</td>
+<td style="text-align: left;">Aqp4</td>
+<td style="text-align: left;">ENSPVIG00000018153</td>
+<td style="text-align: left;">ENSLSDG00000003332</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FGFR3</td>
+<td style="text-align: left;">Fgfr3</td>
+<td style="text-align: left;">ENSPVIG00000014380</td>
+<td style="text-align: left;">ENSLSDG00000000079</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ALDH1L1</td>
+<td style="text-align: left;">Aldh1l1</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GFAP</td>
+<td style="text-align: left;">Gfap</td>
+<td style="text-align: left;">ENSPVIG00000019022</td>
+<td style="text-align: left;">ENSLSDG00000006989</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">S100B</td>
+<td style="text-align: left;">S100b</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">ENSLSDG00000001793</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="scrna-seq-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="scrna-seq-analysis">scRNA-seq Analysis</h2>
+<section id="selected-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="selected-datasets">Selected datasets</h3>
+<ul>
+<li><a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA408230">PRJNA408230</a> (DropSeq) - 2020
+<ul>
+<li>Pallium expression in Pogona vitticeps (lizard species)</li>
+<li>35 samples</li>
+</ul></li>
+<li><a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE150486">GSE150486</a> (10x) - 2020
+<ul>
+<li>Gene expression in two song-production related regions in Lonchura striata domestica (Bengali Finch)</li>
+<li>4 samples</li>
+</ul></li>
+<li><a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE230116">GSE230116</a> (10x) - 2023
+<ul>
+<li>Astrocyte expression in mice (only WT samples will be used)</li>
+<li>4 samples</li>
+</ul></li>
+</ul>
+</section>
+<section id="methodology" class="level3">
+<h3 class="anchored" data-anchor-id="methodology">Methodology</h3>
+<ul>
+<li><p>Data was be acquired from <a href="https://www.ncbi.nlm.nih.gov/sra/">SRA</a> through the <a href="https://github.com/nf-core/fetchngs">nf-core/fetchngs</a> pipeline.</p></li>
+<li><p>Count matrices were assembled through the <a href="https://github.com/nf-core/scrnaseq">nf-core/scrnaseq</a> pipeline, using kallisto for alignment.</p></li>
+<li><p>Matrices were then processed in the R programming language, using the <a href="https://satijalab.org/seurat/">Seurat</a> package.</p>
+<ul>
+<li>The integrated dataset was then annotated using TransferData to a Mus musculus reference expression dataset.</li>
+</ul></li>
+<li><p>All computational infrastructure was provided by <a href="http://npad.ufrn.br/">NPAD/UFRN</a>.</p></li>
+</ul>
+</section>
+<section id="results" class="level3">
+<h3 class="anchored" data-anchor-id="results">Results</h3>
+<ul>
+<li>The only dataset in which Astrocytes were detected among the cell clusters was the Mus musculus dataset.</li>
+<li>Annotation results for L. striata and P. vitticeps showed a significant number of Neurons annotated, and multiple populations of neurons.
+<ul>
+<li>This is consistent with the processed results from the P. vitticeps study, which showed no Astrocyte population, only different neuron subtypes.</li>
+</ul></li>
+</ul>
+<section id="m.-musculus" class="level4">
+<h4 class="anchored" data-anchor-id="m.-musculus">M. musculus</h4>
+<p><img src="../results/mmusculus/score_heatmap.png" class="img-fluid"></p>
+</section>
+<section id="p.-vitticeps" class="level4">
+<h4 class="anchored" data-anchor-id="p.-vitticeps">P. vitticeps</h4>
+<p><img src="../results/pvitticeps/score_heatmap.png" class="img-fluid"></p>
+</section>
+<section id="l.-striata" class="level4">
+<h4 class="anchored" data-anchor-id="l.-striata">L. striata</h4>
+<p><img src="../results/lstriata/score_heatmap.png" class="img-fluid"></p>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
